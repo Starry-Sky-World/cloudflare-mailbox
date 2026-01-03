@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { Env } from './types';
+import { email as emailHandler } from './email';
 import authRoutes from './routes/auth';
 import emailRoutes from './routes/emails';
 import categoryRoutes from './routes/categories';
@@ -47,4 +48,4 @@ app.get('*', async (c) => {
 });
 
 export default app;
-export { default as email } from './email';
+export const email = emailHandler;
