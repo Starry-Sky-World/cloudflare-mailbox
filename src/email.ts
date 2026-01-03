@@ -7,7 +7,12 @@ import { ensureDb } from './utils/db';
 
 export default {
   async email(message: EmailMessage, env: Env, ctx: ExecutionContext) {
-    await ensureDb(env);
+    try {
+      await ensureDb(env);
+    } catch (error) {
+      console.error('DB init failed:', error);
+      return;
+    }
     const parsed = await parseRawEmail(message.raw);
 
     const email = {

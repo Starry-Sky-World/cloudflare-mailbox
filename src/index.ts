@@ -12,7 +12,12 @@ const app = new Hono<{ Bindings: Env }>();
 
 app.use('/api/*', cors());
 app.use('/api/*', async (c, next) => {
-  await ensureDb(c.env);
+  try {
+    await ensureDb(c.env);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Database init failed';
+    return c.json({ error: message }, 500);
+  }
   await next();
 });
 

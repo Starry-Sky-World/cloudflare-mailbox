@@ -65,6 +65,9 @@ END;
 `;
 
 export async function ensureDb(env: Env) {
+  if (!env.DB || !env.KV) {
+    throw new Error('Missing D1/KV bindings');
+  }
   const flag = await env.KV.get('db_initialized');
   if (flag) return;
   await env.DB.exec(SCHEMA_SQL);
