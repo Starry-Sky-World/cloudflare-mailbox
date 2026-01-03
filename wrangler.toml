@@ -1,0 +1,21 @@
+name = "mailbox"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./frontend/dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mailbox-db"
+database_id = "4c46d59c-f646-40ff-9be3-504bdb24b311"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "8706af20b6574e23b5e4c75a3f6ca78c"
+
+[vars]
+RECOVERY_KEY = ""
+
+[triggers]
+emails = ["*@starrysky.de5.net"]
