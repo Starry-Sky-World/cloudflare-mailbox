@@ -33,6 +33,10 @@ app.get('*', async (c) => {
     return c.json({ error: 'Not found' }, 404);
   }
 
+  if (!c.env.ASSETS) {
+    return c.text('Static assets binding missing. Check wrangler assets config.', 500);
+  }
+
   const response = await c.env.ASSETS.fetch(c.req.raw);
   if (response.status !== 404) {
     return response;

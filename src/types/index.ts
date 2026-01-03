@@ -2,7 +2,7 @@ export interface Env {
   DB: D1Database;
   KV: KVNamespace;
   RECOVERY_KEY?: string;
-  ASSETS: Fetcher;
+  ASSETS?: Fetcher;
 }
 
 export interface Config {
