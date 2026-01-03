@@ -6,7 +6,6 @@ import emailRoutes from './routes/emails';
 import categoryRoutes from './routes/categories';
 import pipelineRoutes from './routes/pipeline';
 import settingsRoutes from './routes/settings';
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 import { ensureDb } from './utils/db';
 
 const app = new Hono<{ Bindings: Env }>();
@@ -24,39 +23,18 @@ app.route('/api/pipeline', pipelineRoutes);
 app.route('/api/settings', settingsRoutes);
 
 app.get('*', async (c) => {
-  try {
-    if (!c.env.__STATIC_CONTENT || !c.env.__STATIC_CONTENT_MANIFEST) {
-      return c.text('Static assets missing. Build frontend and redeploy.', 500);
-    }
-    const response = await getAssetFromKV(
-      {
-        request: c.req.raw,
-        waitUntil: c.executionCtx.waitUntil.bind(c.executionCtx),
-      },
-      {
-        ASSET_NAMESPACE: c.env.__STATIC_CONTENT,
-        ASSET_MANIFEST: c.env.__STATIC_CONTENT_MANIFEST,
-      }
-    );
-    return response;
-  } catch {
-    const url = new URL(c.req.url);
-    if (url.pathname.startsWith('/api')) {
-      return c.json({ error: 'Not found' }, 404);
-    }
-    if (!c.env.__STATIC_CONTENT || !c.env.__STATIC_CONTENT_MANIFEST) {
-      return c.text('Static assets missing. Build frontend and redeploy.', 500);
-    }
-    const fallback = new Request(new URL('/index.html', url).toString(), c.req.raw);
-    const response = await getAssetFromKV(
-      { request: fallback, waitUntil: c.executionCtx.waitUntil.bind(c.executionCtx) },
-      {
-        ASSET_NAMESPACE: c.env.__STATIC_CONTENT,
-        ASSET_MANIFEST: c.env.__STATIC_CONTENT_MANIFEST,
-      }
-    );
+  const url = new URL(c.req.url);
+  if (url.pathname.startsWith('/api')) {
+    return c.json({ error: 'Not found' }, 404);
+  }
+
+  const response = await c.env.ASSETS.fetch(c.req.raw);
+  if (response.status !== 404) {
     return response;
   }
+
+  const fallback = new Request(new URL('/index.html', url).toString(), c.req.raw);
+  return c.env.ASSETS.fetch(fallback);
 });
 
 export default app;

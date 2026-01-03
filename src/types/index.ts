@@ -2,8 +2,7 @@ export interface Env {
   DB: D1Database;
   KV: KVNamespace;
   RECOVERY_KEY?: string;
-  __STATIC_CONTENT?: KVNamespace;
-  __STATIC_CONTENT_MANIFEST?: string;
+  ASSETS: Fetcher;
 }
 
 export interface Config {
