@@ -47,5 +47,7 @@ app.get('*', async (c) => {
   return c.env.ASSETS.fetch(fallback);
 });
 
-export default app;
-export const email = emailHandler;
+const fetch = app.fetch;
+
+export { emailHandler as email };
+export default { fetch, email: emailHandler };
