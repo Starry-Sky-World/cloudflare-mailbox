@@ -25,6 +25,9 @@ app.route('/api/settings', settingsRoutes);
 
 app.get('*', async (c) => {
   try {
+    if (!c.env.__STATIC_CONTENT || !c.env.__STATIC_CONTENT_MANIFEST) {
+      return c.text('Static assets missing. Build frontend and redeploy.', 500);
+    }
     const response = await getAssetFromKV(
       {
         request: c.req.raw,
@@ -40,6 +43,9 @@ app.get('*', async (c) => {
     const url = new URL(c.req.url);
     if (url.pathname.startsWith('/api')) {
       return c.json({ error: 'Not found' }, 404);
+    }
+    if (!c.env.__STATIC_CONTENT || !c.env.__STATIC_CONTENT_MANIFEST) {
+      return c.text('Static assets missing. Build frontend and redeploy.', 500);
     }
     const fallback = new Request(new URL('/index.html', url).toString(), c.req.raw);
     const response = await getAssetFromKV(
