@@ -123,5 +123,17 @@ onMounted(() => {
   .mobile-back {
     display: inline-flex;
   }
+
+  .inbox-header {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .inbox-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>

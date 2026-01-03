@@ -60,4 +60,14 @@ onMounted(() => {
   cursor: pointer;
 }
 
+@media (max-width: 960px) {
+  .section-title {
+    margin: 10px 0 6px;
+  }
+
+  .link-row {
+    padding: 10px 12px;
+  }
+}
+
 </style>
